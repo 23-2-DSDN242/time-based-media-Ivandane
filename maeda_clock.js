@@ -16,7 +16,7 @@ function draw_clock(obj) {
   // Declare second radius
   let secondRadius = 50;
 
-  // Declare stroke color
+  // Set stroke color
   stroke(0, 0, 255);
   
   // Draw ellipses
@@ -59,7 +59,7 @@ function draw_clock(obj) {
   // Declare minute radius
   let minuteRadius = 55;
 
-  // Declare stroke color
+  // Set stroke color
   stroke(255, 255, 0);
 
   // Draw ellipses
@@ -99,7 +99,7 @@ function draw_clock(obj) {
   // Declare hour radius
   let hourRadius = 60;
 
-  // Declare stroke color
+  // Set stroke color
   stroke(255, 0, 0);
 
   // Draw ellipses
