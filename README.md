@@ -6,4 +6,8 @@ I plan to have two/three circular ring-like objects in the middle of the canvas,
 
 ## Maeda Clock
 
-I recreated the second Maeda Clock, designed by John Maeda, using a function and a grid-system to align the circles. 
+I recreated the second Maeda Clock, designed by John Maeda, using a function and a grid-system to align the circles.
+
+## Original Clock
+
+I changed my idea slightly and made a pond with overlapping circles, and a branch that stretches over the pond.
