@@ -1,13 +1,12 @@
-// Declare variables
+// Declare global variables
 let ellipseX = 175;
 let ellipseY = 75;
 let ellipseGrid = 60;
 
-// Update this function to draw you own maeda clock on a 960x500 canvas
+// DRAW CLOCK FUNCTION
 function draw_clock(obj) {
-  // YOUR MAIN CLOCK CODE GOES HERE
   // Set styles
-  background(0);
+  background(0); // Black
   strokeWeight(2);
   noFill();
 
@@ -17,7 +16,7 @@ function draw_clock(obj) {
   let secondRadius = 50;
 
   // Set stroke color
-  stroke(0, 0, 255);
+  stroke(0, 0, 255); // Blue
   
   // Draw ellipses
   drawEllipse(4, 0, secondRadius);
@@ -60,7 +59,7 @@ function draw_clock(obj) {
   let minuteRadius = 55;
 
   // Set stroke color
-  stroke(255, 255, 0);
+  stroke(255, 255, 0); // Yellow
 
   // Draw ellipses
   drawEllipse(3, 0, minuteRadius);
@@ -100,7 +99,7 @@ function draw_clock(obj) {
   let hourRadius = 60;
 
   // Set stroke color
-  stroke(255, 0, 0);
+  stroke(255, 0, 0); // Red
 
   // Draw ellipses
   drawEllipse(6, 0, hourRadius);
@@ -125,5 +124,6 @@ function draw_clock(obj) {
 
 // DRAW ELLIPSE FUNCTION
 function drawEllipse(x, y, radius) {
+  // Draw ellipse using arguments
   ellipse(ellipseX + ellipseGrid * x, ellipseY + ellipseGrid * y, radius);
 }
