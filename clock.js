@@ -4,8 +4,11 @@ Use p5.js to draw a clock on a 960x500 canvas
 
 // GLOBAL VARIABLES
 let initialize = true;
+let oldHour;
+let sakuraImg;
 
 let flowers = [];
+let sakuras = [];
 
 // DRAW CLOCK FUNCTION
 function draw_clock(obj) {
@@ -23,40 +26,23 @@ function draw_clock(obj) {
   if (initialize) {
     // Set styles
     angleMode(DEGREES);
+
+    // Load sakura image
+    sakuraImg = loadImage('assets/sakura.png');
+
+    // Create sakura objects depending on the current hour
+    for (let i = 0; i < obj.hours; i++) {
+      // Append object to sakuras array
+      sakuras.push(new Sakura(
+        random(-200, 200), // X
+        random(-100, 100), // Y
+        random(0.5, 0.75) // Scale
+      ));
+    }
+
+    // Set oldHour to current hour
+    oldHour = obj.hours;
     
-    // Create flower objects
-    flowers.push(new Flower(
-      -300,
-      -100,
-      50,
-      color(255, 0, 0),
-      8
-    ));
-    
-    flowers.push(new Flower(
-      300,
-      -100,
-      50,
-      color(255, 0, 255),
-      8
-    ));
-
-    flowers.push(new Flower(
-      -300,
-      100,
-      50,
-      color(255, 255, 0),
-      8
-    ));
-
-    flowers.push(new Flower(
-      300,
-      100,
-      50,
-      color(0, 255, 255),
-      8
-    ));
-
     // Set boolean to false
     initialize = false;
   }
@@ -69,48 +55,90 @@ function draw_clock(obj) {
   pond();
 
   // DRAW BRANCHES
-  branch();
+  // branch();
 
   // DRAW FLOWERS
   // Repeat for every flower object in array
-  for (const flower of flowers) {
-    // Run show function
-    flower.show();
+  // for (const flower of flowers) {
+  //   // Run show function
+  //   flower.show();
+  // }
+
+  // DRAW SAKURAS
+  if (obj.hours > oldHour) {
+    // Append sakuras array with new object
+    sakuras.push(new Sakura(
+      random(-200, 200),
+      random(-100, 100),
+      random(0.25, 0.75)
+    ));
+
+    // Set oldHour to current hour
+    oldHour = obj.hours;
   }
+
+  if (obj.hours < oldHour) {
+    // Remove latest object from sakuras array
+    sakuras.pop();
+
+    // Set oldHour to current hour
+    oldHour = obj.hours;
+  }
+
+  // Repeat for all objects in sakuras array
+  for (const sakura of sakuras) {
+    sakura.setRotation(obj.seconds);
+    sakura.show();
+  }
+
+  // DEBUG
+  debug();
 }
 
-// FLOWER CLASS
-class Flower {
+// SAKURA CLASS
+class Sakura {
   // Constructor function
-  constructor(_x, _y, _r, _color, _numPetals) {
-    // Pass arguments into respective variables
+  constructor(_x, _y, _scale) {
     this.x = _x;
     this.y = _y;
-    this.r = _r;
-    this.color = _color;
-    this.numPetals = _numPetals;
+    this.scale = _scale;
+
+    this.direction = floor(random(2));
+    this.rotation;
+  }
+
+  // Set rotation function
+  setRotation(seconds) {
+    // Clockwise
+    if (this.direction === 0) {
+      this.rotation = map(seconds, 0, 59, 0, 359);
+    }
+
+    // Anti-clockwise
+    if (this.direction === 1) {
+      this.rotation = map(seconds, 0, 59, 359, 0);
+    }
+  }
+
+  // Move function
+  move() {
+    
   }
 
   // Show function
   show() {
-    // Set styles
     push();
-    stroke(this.color);
-    strokeWeight(2);
-    fill(this.color);
+    translate(this.x, this.y);
+    rotate(this.rotation);
+    scale(this.scale);
 
-    // Draw flower
-    beginShape();
-    // Repeat for every angle
-    for (let i = 0; i < 360; i++) {
-      // Declare variables
-      let x = this.r * cos(i * this.numPetals) * cos(i) + this.x;
-      let y = this.r * cos(i * this.numPetals) * sin(i) + this.y;
+    drawingContext.shadowOffsetX = 10;
+    drawingContext.shadowOffsetY = -10;
+    drawingContext.shadowBlur = 25;
+    drawingContext.shadowColor = color(40, 40, 40); // Dark gray
 
-      // Create vertex
-      vertex(x, y);
-    }
-    endShape(CLOSE);
+    imageMode(CENTER);
+    image(sakuraImg, 0, 0);
     pop();
   }
 }
@@ -127,7 +155,7 @@ function pond() {
 
   // Repeat 50 times
   for (let i = 0; i < 50; i++) {
-    // Set fill color and increasing alpha value
+    // Set fill color with increasing alpha value
     fill(100, 100, 255, pondAlpha * i);
 
     // Draw ellipse with decreasing radius
@@ -146,6 +174,17 @@ function branch() {
 
   strokeWeight(10);
   bezier(-230, -140, -210, -100, -120, -80, -120, -80);
-  // point(-120, -60);
+  pop();
+}
+
+// DEBUG FUNCTION
+function debug() {
+  push();
+  fill(255);
+  textSize(20);
+  textAlign(LEFT);
+  text('Hours: ' + obj.hours, -450, -200);
+  text('Minutes: ' + obj.minutes, -450, -175);
+  text('Seconds: ' + obj.seconds, -450, -150);
   pop();
 }
