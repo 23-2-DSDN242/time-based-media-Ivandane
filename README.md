@@ -23,3 +23,10 @@ GitHub Page: https://23-2-dsdn242.github.io/time-based-media-Ivandane/
 - Created a sakura blossom image to load into my project.
 - Created a class that loads objects within an array depending on the current minutes.
 - Used obj.hours and a variable 'oldHour' to populate the array with the correct amount of objects.
+
+## 14/03/2024
+
+- Linked shadows of sakura to the current hour
+- Replaced random with noise
+- Fixed bug where the number of sakura did not match the current hour
+- Set starting point for sakura at (0, 0)

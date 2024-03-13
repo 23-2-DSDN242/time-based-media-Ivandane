@@ -4,10 +4,9 @@ Use p5.js to draw a clock on a 960x500 canvas
 
 // GLOBAL VARIABLES
 let initialize = true;
-let oldHour;
 let sakuraImg;
+let numSakura = 0;
 
-let flowers = [];
 let sakuras = [];
 
 // DRAW CLOCK FUNCTION
@@ -24,24 +23,8 @@ function draw_clock(obj) {
   
   // Run "setup" function
   if (initialize) {
-    // Set styles
-    angleMode(DEGREES);
-
     // Load sakura image
     sakuraImg = loadImage('assets/sakura.png');
-
-    // Create sakura objects depending on the current hour
-    for (let i = 0; i < obj.hours; i++) {
-      // Append object to sakuras array
-      sakuras.push(new Sakura(
-        random(-200, 200), // X
-        random(-100, 100), // Y
-        random(0.5, 0.75) // Scale
-      ));
-    }
-
-    // Set oldHour to current hour
-    oldHour = obj.hours;
     
     // Set boolean to false
     initialize = false;
@@ -50,6 +33,7 @@ function draw_clock(obj) {
   // Set styles
   background(170);
   translate(width / 2, height / 2);
+  angleMode(DEGREES);
 
   // DRAW POND
   pond();
@@ -57,38 +41,31 @@ function draw_clock(obj) {
   // DRAW BRANCHES
   // branch();
 
-  // DRAW FLOWERS
-  // Repeat for every flower object in array
-  // for (const flower of flowers) {
-  //   // Run show function
-  //   flower.show();
-  // }
-
   // DRAW SAKURAS
-  if (obj.hours > oldHour) {
-    // Append sakuras array with new object
-    sakuras.push(new Sakura(
-      random(-200, 200),
-      random(-100, 100),
-      random(0.25, 0.75)
-    ));
 
-    // Set oldHour to current hour
-    oldHour = obj.hours;
+
+  if (obj.hours > numSakura) {
+    // Append sakuras array with new object
+    sakuras.push(new Sakura());
+
+    // Set numSakura to current hour
+    numSakura++;
   }
 
-  if (obj.hours < oldHour) {
+  if (obj.hours < numSakura) {
     // Remove latest object from sakuras array
     sakuras.pop();
 
-    // Set oldHour to current hour
-    oldHour = obj.hours;
+    // Set numSakura to current hour
+    numSakura--;
   }
 
-  // Repeat for all objects in sakuras array
+  // Run the show function for all objects in sakuras array
   for (const sakura of sakuras) {
-    sakura.show();
+    sakura.show(obj.hours);
   }
+
+  console.log(numSakura);
 
   // DEBUG
   debug();
@@ -97,38 +74,62 @@ function draw_clock(obj) {
 // SAKURA CLASS
 class Sakura {
   // Constructor function
-  constructor(_x, _y, _scale) {
-    this.x = _x;
-    this.y = _y;
-    this.scale = _scale;
+  constructor() {
+    // Randomise variables
+    this.scale = map(noise(frameCount), 0, 1, 0.5, 1);
+    this.direction = round(noise(frameCount));
+    this.initialRotation = map(noise(frameCount), 0, 1, 0, 359);
+    this.rotationSpeed = map(noise(frameCount), 0, 1, 0, 0.1);
 
-    this.direction = floor(random(2));
-    this.initialRotation = floor(random(360));
-    this.rotationSpeed = random(0.1);
-
+    // Set rotation as initial rotation
     this.rotation = this.initialRotation;
   }
 
+  move() {
+    
+  }
+
   // Show function
-  show() {
-    // Calculate the rotation based on the elapsed time and direction
+  show(hours) {
+    // Calculate the rotation based on the direction and elapsed time
     let rotationDirection = (this.direction === 0) ? 1 : -1;
     let currentRotation = ((frameCount * this.rotationSpeed) % 360) * rotationDirection;
 
-    // Add the initial rotation to create a seamless loop
+    // Add initial rotation to create a seamless loop
     this.rotation = (currentRotation + this.initialRotation) % 360;
 
+    // Set styles
     push();
-    translate(this.x, this.y);
+    translate(0, 0);
     rotate(this.rotation);
     scale(this.scale);
     imageMode(CENTER);
-
-    drawingContext.shadowOffsetX = 5;
-    drawingContext.shadowOffsetY = -5;
     drawingContext.shadowBlur = 25;
     drawingContext.shadowColor = color(40, 40, 40); // Dark gray
 
+    // Shadow X
+    if (hours <= 11) {
+      drawingContext.shadowOffsetX = map(hours, 0, 11, 25, -25);
+    }
+    else {
+      drawingContext.shadowOffsetX = map(hours, 12, 23, 25, -25);
+    }
+    
+    // Shadow Y
+    if (hours <= 5) {
+      drawingContext.shadowOffsetY = map(hours, 0, 5, 20, -10);
+    }
+    else if (hours >= 6 && hours <= 11) {
+      drawingContext.shadowOffsetY = map(hours, 6, 11, -10, 20);
+    }
+    else if (hours >= 12 && hours <= 17) {
+      drawingContext.shadowOffsetY = map(hours, 12, 17, 20, -10);
+    }
+    else if (hours >= 18) {
+      drawingContext.shadowOffsetY = map(hours, 18, 23, -10, 20);
+    }
+
+    // Draw image
     image(sakuraImg, 0, 0);
     pop();
   }
@@ -177,5 +178,6 @@ function debug() {
   text('Hours: ' + obj.hours, -450, -200);
   text('Minutes: ' + obj.minutes, -450, -175);
   text('Seconds: ' + obj.seconds, -450, -150);
+  text('Number of sakura: ' + numSakura, -450, -125);
   pop();
 }
