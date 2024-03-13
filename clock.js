@@ -87,7 +87,6 @@ function draw_clock(obj) {
 
   // Repeat for all objects in sakuras array
   for (const sakura of sakuras) {
-    sakura.setRotation(obj.seconds);
     sakura.show();
   }
 
@@ -104,40 +103,32 @@ class Sakura {
     this.scale = _scale;
 
     this.direction = floor(random(2));
-    this.rotation;
-  }
+    this.initialRotation = floor(random(360));
+    this.rotationSpeed = random(0.1);
 
-  // Set rotation function
-  setRotation(seconds) {
-    // Clockwise
-    if (this.direction === 0) {
-      this.rotation = map(seconds, 0, 59, 0, 359);
-    }
-
-    // Anti-clockwise
-    if (this.direction === 1) {
-      this.rotation = map(seconds, 0, 59, 359, 0);
-    }
-  }
-
-  // Move function
-  move() {
-    
+    this.rotation = this.initialRotation;
   }
 
   // Show function
   show() {
+    // Calculate the rotation based on the elapsed time and direction
+    let rotationDirection = (this.direction === 0) ? 1 : -1;
+    let currentRotation = ((frameCount * this.rotationSpeed) % 360) * rotationDirection;
+
+    // Add the initial rotation to create a seamless loop
+    this.rotation = (currentRotation + this.initialRotation) % 360;
+
     push();
     translate(this.x, this.y);
     rotate(this.rotation);
     scale(this.scale);
+    imageMode(CENTER);
 
-    drawingContext.shadowOffsetX = 10;
-    drawingContext.shadowOffsetY = -10;
+    drawingContext.shadowOffsetX = 5;
+    drawingContext.shadowOffsetY = -5;
     drawingContext.shadowBlur = 25;
     drawingContext.shadowColor = color(40, 40, 40); // Dark gray
 
-    imageMode(CENTER);
     image(sakuraImg, 0, 0);
     pop();
   }

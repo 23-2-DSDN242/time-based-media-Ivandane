@@ -10,6 +10,8 @@ I recreated the second Maeda Clock, designed by John Maeda, using a function and
 
 ## Original Clock Process
 
+GitHub Page: https://23-2-dsdn242.github.io/time-based-media-Ivandane/
+
 ## 07/03/2024
 
 - Changed initial idea to encompass a sakura theme (based off the Aston Norwood Sakura Blossom Garden in Upper Hutt).
